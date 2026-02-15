@@ -4,6 +4,8 @@ description: >-
   Trigger with "lint without installing" or "format without dependencies".
   Use when running linters, formatters, or type-checkers without installing them.
 version: 1.0.0
+license: MIT
+tags: [linters, formatters, type-checkers, uvx, bunx, npx, ruff, eslint, prettier, mypy, no-install]
 ---
 
 # NO-INSTALL-LINTERS : run linters / formatters / type-checkers without installing them
