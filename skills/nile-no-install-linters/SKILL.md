@@ -239,7 +239,7 @@ npx --yes shellcheck script.sh
 
 ## Workflow Checklist
 
-Use this checklist to ensure you follow all steps when running a linter, formatter, or type-checker without installing it:
+Copy this checklist and track your progress when running a linter, formatter, or type-checker without installing it:
 
 - [ ] Identify the tool to run (e.g. ruff, eslint, prettier, mypy, shellcheck)
 - [ ] Determine the tool's ecosystem (Python, Node.js, Deno, native, container)
