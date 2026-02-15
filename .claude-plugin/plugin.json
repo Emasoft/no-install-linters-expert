@@ -1,0 +1,15 @@
+{
+  "name": "no-install-linters-expert",
+  "version": "1.0.0",
+  "description": "Run linters, formatters, and type-checkers without installing them using uvx, bunx, npx, and other no-install runners. Includes smart executor script and expert agent.",
+  "author": {
+    "name": "Emasoft",
+    "email": "713559+Emasoft@users.noreply.github.com"
+  },
+  "repository": "https://github.com/Emasoft/no-install-linters-expert",
+  "license": "MIT",
+  "agents": [
+    "./agents/nile-no-install-linters-agent.md"
+  ],
+  "skills": "./skills/"
+}
