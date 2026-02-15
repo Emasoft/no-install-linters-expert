@@ -1,6 +1,6 @@
 {
   "name": "no-install-linters-expert",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Run linters, formatters, and type-checkers without installing them using uvx, bunx, npx, and other no-install runners. Includes smart executor script and expert agent.",
   "author": {
     "name": "Emasoft",
