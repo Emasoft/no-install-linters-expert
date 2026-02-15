@@ -237,6 +237,20 @@ docker run --rm -i hadolint/hadolint < Dockerfile
 npx --yes shellcheck script.sh
 ```
 
+## Workflow Checklist
+
+Use this checklist to ensure you follow all steps when running a linter, formatter, or type-checker without installing it:
+
+- [ ] Identify the tool to run (e.g. ruff, eslint, prettier, mypy, shellcheck)
+- [ ] Determine the tool's ecosystem (Python, Node.js, Deno, native, container)
+- [ ] Check which runners are available on the system (uvx, bunx, npx, pnpm dlx, yarn dlx, deno, docker, pwsh)
+- [ ] Consult the runner table above to find the best runner for the tool
+- [ ] Run the tool using the chosen runner's syntax from the table
+- [ ] Alternatively, use `smart_exec.py run <tool> [args]` to auto-detect the best runner
+- [ ] Review the tool's output (diagnostics, formatting diffs, type errors)
+- [ ] Fix any reported issues in the source files
+- [ ] Re-run the tool to confirm all issues are resolved (exit code 0)
+
 ## Resources
 
 - `uvx` is an alias of `uv tool run`: https://docs.astral.sh/uv/concepts/tools/
