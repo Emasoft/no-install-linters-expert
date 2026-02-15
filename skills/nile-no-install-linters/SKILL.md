@@ -1,15 +1,16 @@
 ---
 name: nile-no-install-linters
 description: >-
-  Run linters, formatters, and type-checkers without installing them using
-  uvx, bunx, npx, pipx run, pnpm dlx, yarn dlx, deno run, and docker.
-  Use when the user asks to lint or format code without adding dependencies.
+  Trigger with "lint without installing" or "format without dependencies".
+  Use when running linters, formatters, or type-checkers without installing them.
 version: 1.0.0
 ---
 
-# NO-INSTALL-LINTERS : a skill to run linters / formatters / type-checkers without installing them
+# NO-INSTALL-LINTERS : run linters / formatters / type-checkers without installing them
 
-This skill teaches how to use **all major "run it without pre-installing it" executors** across ecosystems, including:
+## Overview
+
+This skill teaches how to use **all major "run it without pre-installing it" executors** across ecosystems to lint, format, and type-check code without adding project dependencies or global installs. Supported ecosystems:
 
 - Node.js: `bunx`, `npx`/`npm exec`, `pnpm dlx`, `yarn dlx`, `deno run npm:...`
 - Python: `uvx` (`uv tool run`), `pipx run`
@@ -19,8 +20,23 @@ This skill teaches how to use **all major "run it without pre-installing it" exe
 
 > Most of these **download + cache** somewhere (global cache, temp dir, tool cache), but they **don't require you to pre-install the tool as a project dependency or global app**.
 
+## Prerequisites
 
-## All major "execute without installing" runners
+- At least one "no-install" runner must be available on the system: `uvx`, `bunx`, `npx`, `pnpm`, `yarn`, `deno`, `docker`, or `pwsh`
+- For Python tools (ruff, black, mypy, pyright, etc.): `uvx` (from uv) or `pipx` must be installed
+- For Node.js tools (eslint, prettier, biome, etc.): `bunx`, `npx`, `pnpm`, or `yarn` must be installed
+- For container-based tools: Docker must be installed and running
+- The `smart_exec.py` script (included in `scripts/`) auto-detects available runners
+
+## Instructions
+
+1. **Identify the file type** you need to lint or format (Python, JS/TS, CSS, YAML, Dockerfile, etc.)
+2. **Consult the runner table below** to find which tool handles that file type
+3. **Pick the best available runner** from the columns marked `[OK]` for your tool
+4. **Run the command** using the syntax shown in the table cell
+5. **Alternatively**, use `smart_exec.py run <tool> [args]` to auto-detect the best runner
+
+### All major "execute without installing" runners
 
 | Ecosystem | Runner | What it runs | Typical syntax | Notes |
 |---|---|---|---|---|
@@ -163,8 +179,66 @@ Usage Examples:
   smart_exec.py run Invoke-ScriptAnalyzer -- -Path . -Recurse
 ```
 
-# Sources
-Runner docs:
+## Output
+
+All linters, formatters, and type-checkers produce output on **stdout/stderr** with a non-zero exit code on failure. Typical output patterns:
+
+- **Linters** (eslint, ruff check, shellcheck): list of diagnostics with file, line number, rule ID, and message. Exit code 1 means issues found.
+- **Formatters** (prettier --check, ruff format --check, biome check): list of files that would be reformatted. Exit code 1 means files need formatting.
+- **Type checkers** (mypy, pyright, tsc --noEmit): list of type errors with file, line, and description. Exit code 1 means type errors found.
+- **smart_exec.py**: preserves the tool's original exit code and output. With `--json` flag, wraps the result in a JSON envelope containing `executor`, `command`, `exit_code`, and `output`.
+
+## Error Handling
+
+- If **no runner is available** for the requested tool, `smart_exec.py` exits with an error message listing which runners it looked for and why each was unavailable.
+- If the **tool package does not exist** in the registry (npm, PyPI), the runner itself will print a "not found" error. Check the package name in the runner table above.
+- If a **runner times out** or hangs, kill the process and try a different runner from the table.
+- If `bunx` fails with permission errors, try `npx --yes` instead (some systems restrict bun's cache directory).
+- If `uvx` cannot resolve a tool, ensure `uv` is version 0.4+ (older versions lack `uvx` alias support).
+- If `docker run` fails, check that the Docker daemon is running (`docker info`) and that the image exists.
+
+## Examples
+
+### Example 1: Lint Python files with ruff (no install)
+
+```bash
+uvx ruff@latest check .
+```
+
+### Example 2: Format JavaScript with prettier (no install)
+
+```bash
+bunx prettier --write "src/**/*.js"
+```
+
+### Example 3: Type-check TypeScript (no install)
+
+```bash
+npx --yes tsc --noEmit -p tsconfig.json
+```
+
+### Example 4: Lint a Dockerfile with hadolint via docker
+
+```bash
+docker run --rm -i hadolint/hadolint < Dockerfile
+```
+
+### Example 5: Use smart_exec.py to auto-pick the runner
+
+```bash
+./scripts/smart_exec.py run ruff check .
+./scripts/smart_exec.py run eslint src/
+./scripts/smart_exec.py which prettier --check .
+```
+
+### Example 6: Lint shell scripts with ShellCheck (no install)
+
+```bash
+npx --yes shellcheck script.sh
+```
+
+## Resources
+
 - `uvx` is an alias of `uv tool run`: https://docs.astral.sh/uv/concepts/tools/
 - `bunx`: https://bun.com/docs/pm/bunx
 - `npx` / `npm exec`: https://docs.npmjs.com/cli/v8/commands/npx
